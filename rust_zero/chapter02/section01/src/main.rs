@@ -82,6 +82,104 @@ fn main() {
     let c: &str = b.trim(); // 前後の空白文字を取り除いたスライスを取得
     println!("{c}");
 
+    // タプル型
+    let _tuple: (i32, char) = (200, 'c');
+    println!("tuple {:?}", _tuple);
+    // 要素を参照（インデックス）
+    println!("tuple.0 {}", _tuple.0);
+    println!("tuple.1 {}", _tuple.1);
+    // 分解
+    let (i1, c1) = _tuple;
+    println!("i1 {}", i1);
+    println!("c1 {}", c1);
+
+    // 関数ポインタ型
+    do_it(add, 23, 3);
+    do_it(mul, 23, 3);
+
+    // ユーザ定義型
+    enum DoW {
+        // variant
+        Sunday,
+        Monday,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday
+    }
+    let day = DoW::Friday;
+
+    enum Storage {
+        HDD {
+            size: u32,
+            rpm: u32
+        },
+        SSD(u32),
+    }
+    let hdd_sample = Storage::HDD { size: 512, rpm: 9600 };
+    let sdd_sample = Storage::SSD(512);
+
+    // 構造体
+    struct PCspec {
+        cpuSpec: u16,
+        memorySpec: u32,
+        storage: Storage,
+    }
+    // PCSpec型の値
+    let spec = PCspec {
+        cpuSpec: 8,
+        memorySpec: 16,
+        storage: Storage::SSD(1024),
+    };
+    println!("{}", spec.cpuSpec);
+
+    // ジェネリクス
+    // リンクリストを表すジェリック型
+    enum List<T> {
+        // T：ジェネリック型の引数で、ここに型や定数を渡すことができる
+        Node { data: T, next: Box<List<T>> },
+        Nil,
+    }
+
+    let generic_sample1 = List::<u32>::Nil;
+    let generic_sample2 = List::<u32>::Node {
+        data: 8, 
+        next: Box::<List<u32>>::new(generic_sample1) };
+    let generic_sample3 = List::Node {
+        data: 32, 
+        next: Box::new(generic_sample2) };
+
+    make_pair::<u8, bool>(40, false);
+    make_pair(20, true);
+
+    // 定数を受け取るジェネリック型の例
+    struct Buffer<const S: usize> {
+        buf: [u16; S],
+    }
+    let buf = Buffer::<64> {buf: [0; 64]};
+
+    // Option型とResult型
+    enum Option<T> {
+        Some(T),
+        None,
+    }
+    enum Result<T, E> {
+        Ok(T),
+        Err(E),
+    }
+
+    // 型変換
+    // asを用いた変換
+    let n :i32 = 100;
+    let m: i64 = n as i64;
+    println!("{}", m);
+
+    //fromまたはintoを用いた型変換
+    let s_from = String::from("apple"); // &strからString型への変換
+    let s_into: String = "orange".into(); // &strからString型への変換
+    println!("{}", s_from);
+    println!("{}", s_into);
 
 }
 
@@ -94,4 +192,26 @@ fn a_short_circuit_evaluation() -> bool {
 fn b_short_circuit_evaluation() -> bool {
     println!("b_short_circuit_evaluation");
     true
+}
+
+// ユニット型の返り値
+fn func_unit1() -> () {} // ユニット型を返す
+fn func_unit2() {} // -> ()は省略可能
+
+// 関数ポインタの例
+fn do_it(f: fn(u32,u32) -> u32, a:u32, b:u32) {
+    println!("{}", f(a, b));
+}
+
+fn add (a:u32, b:u32) -> u32 {
+    return a + b;
+}
+
+fn mul (a:u32, b:u32) -> u32 {
+    return a * b;
+}
+
+// ジェネリック関数の例
+fn make_pair<T1, T2>(a: T1, b:T2) -> (T1, T2) {
+    return (a, b);
 }
