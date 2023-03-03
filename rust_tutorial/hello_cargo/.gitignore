@@ -1,0 +1,7 @@
+# local directories
+target
+
+# lock file
+Cargo.lock
+
+# Editor directories and files
